@@ -20,7 +20,7 @@ export default function SectionHeading({ eyebrow, title, intro, align = 'center'
       </Reveal>
 
       <Reveal delay={0.15}>
-        <h2 className="font-display text-3xl md:text-5xl font-medium leading-tight text-mist-50">
+        <h2 className="font-display text-3xl md:text-5xl font-medium leading-tight text-balance text-mist-50">
           {title}
         </h2>
       </Reveal>

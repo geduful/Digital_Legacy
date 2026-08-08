@@ -5,7 +5,7 @@ import Reveal from './Reveal'
 
 export default function BirthdayLetter() {
   return (
-    <section id="message" className="relative overflow-hidden py-28 md:py-40">
+    <section id="message" className="relative overflow-hidden py-24 md:py-40">
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -15,7 +15,7 @@ export default function BirthdayLetter() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-3xl px-5 md:px-8">
+      <div className="relative mx-auto max-w-3xl px-4 sm:px-6 md:px-8">
         <div className="flex flex-col items-center text-center">
           <Reveal>
             <span className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.05] px-4 py-1.5 backdrop-blur-md">
@@ -58,25 +58,25 @@ export default function BirthdayLetter() {
             whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-            className="paper relative rounded-[1.75rem] px-6 py-10 md:px-12 md:py-14 shadow-[0_70px_140px_-40px_rgba(0,0,0,0.85),0_30px_60px_-30px_rgba(212,175,55,0.15)]"
+            className="paper relative rounded-[1.5rem] px-5 py-9 sm:px-8 sm:py-10 md:px-12 md:py-14 shadow-[0_70px_140px_-40px_rgba(0,0,0,0.85),0_30px_60px_-30px_rgba(212,175,55,0.15)]"
             style={{ transformPerspective: 1400 }}
           >
             {/* Gold corner accents */}
-            <span className="pointer-events-none absolute top-4 left-4 h-7 w-7 rounded-tl-2xl border-t border-l border-gold-500/50" aria-hidden="true" />
-            <span className="pointer-events-none absolute top-4 right-4 h-7 w-7 rounded-tr-2xl border-t border-r border-gold-500/50" aria-hidden="true" />
-            <span className="pointer-events-none absolute bottom-4 left-4 h-7 w-7 rounded-bl-2xl border-b border-l border-gold-500/50" aria-hidden="true" />
-            <span className="pointer-events-none absolute bottom-4 right-4 h-7 w-7 rounded-br-2xl border-b border-r border-gold-500/50" aria-hidden="true" />
+            <span className="pointer-events-none absolute top-4 left-4 h-6 w-6 rounded-tl-2xl border-t border-l border-gold-500/50" aria-hidden="true" />
+            <span className="pointer-events-none absolute top-4 right-4 h-6 w-6 rounded-tr-2xl border-t border-r border-gold-500/50" aria-hidden="true" />
+            <span className="pointer-events-none absolute bottom-4 left-4 h-6 w-6 rounded-bl-2xl border-b border-l border-gold-500/50" aria-hidden="true" />
+            <span className="pointer-events-none absolute bottom-4 right-4 h-6 w-6 rounded-br-2xl border-b border-r border-gold-500/50" aria-hidden="true" />
 
             <Reveal delay={0.1}>
-              <p className="font-serif-alt text-2xl md:text-3xl italic font-medium text-ocean-900">
+              <p className="font-serif-alt text-xl sm:text-2xl md:text-3xl italic font-medium text-ocean-900">
                 {letter.salutation}
               </p>
             </Reveal>
 
-            <div className="mt-6 flex flex-col gap-4">
+            <div className="mt-5 flex flex-col gap-4 sm:mt-6">
               {letter.paragraphs.map((paragraph, i) => (
                 <Reveal key={i} delay={0.15 + i * 0.09}>
-                  <p className="font-serif-alt text-[17px] md:text-lg italic font-light leading-[1.9] text-ocean-900/85">
+                  <p className="font-serif-alt text-[16px] md:text-lg italic font-light leading-[1.85] text-ocean-900/85">
                     {paragraph}
                   </p>
                 </Reveal>

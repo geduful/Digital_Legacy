@@ -4,11 +4,17 @@ import { Plus } from 'lucide-react'
 import { reasons } from '../data/content'
 import SectionHeading from './SectionHeading'
 
+// 3D tilt is desktop-only — hover-capable devices only. Touch devices
+// get a simple, fast card instead of tilting on every tap.
+const canHover =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(hover: hover) and (pointer: fine)').matches
+
 export default function Reasons() {
   const [openIndex, setOpenIndex] = useState(null)
 
   return (
-    <section id="why" className="relative overflow-hidden py-28 md:py-40">
+    <section id="why" className="relative overflow-hidden py-24 md:py-40">
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -18,14 +24,14 @@ export default function Reasons() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-6xl px-5 md:px-8">
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-6 md:px-8">
         <SectionHeading
           eyebrow={reasons.eyebrow}
           title={reasons.title}
           intro={reasons.intro}
         />
 
-        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-5 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
           {reasons.items.map((reason, i) => {
             const Icon = reason.icon
             const open = openIndex === i
@@ -39,14 +45,14 @@ export default function Reasons() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.8, delay: (i % 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -6, rotateX: 3, rotateY: i % 2 === 0 ? -2 : 2 }}
+                whileHover={canHover ? { y: -6, rotateX: 3, rotateY: i % 2 === 0 ? -2 : 2 } : undefined}
                 whileTap={{ scale: 0.98 }}
                 style={{ transformPerspective: 900 }}
                 className="group relative w-full rounded-2xl bg-gradient-to-b from-white/[0.16] via-white/[0.05] to-white/[0.08] p-px text-left"
                 aria-expanded={open}
               >
                 <span
-                  className={`relative flex h-full w-full flex-col items-center rounded-[calc(1rem-1px)] px-6 py-9 text-center backdrop-blur-[25px] transition-colors duration-500 ${
+                  className={`relative flex h-full w-full flex-col items-center rounded-[calc(1rem-1px)] px-6 py-8 sm:py-9 text-center backdrop-blur-[25px] transition-colors duration-500 ${
                     open ? 'bg-white/[0.1]' : 'bg-[rgba(255,255,255,0.07)]'
                   }`}
                 >

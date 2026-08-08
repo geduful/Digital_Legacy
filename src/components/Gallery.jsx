@@ -2,36 +2,38 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { memories } from '../data/content'
-import { getImage, hasImages } from '../data/images'
+import { variants, hasImages } from '../data/images'
 import SectionHeading from './SectionHeading'
-import Image from './Image'
+import { Photo } from './Image'
 
 const order = ['3', '4', '5', '6']
 
-const masonryAspects = ['aspect-[4/5]', 'aspect-[3/4]', 'aspect-square', 'aspect-[4/5]', 'aspect-[3/4]']
+const aspects = ['aspect-[4/5]', 'aspect-[3/4]', 'aspect-square', 'aspect-[4/5]', 'aspect-[3/4]']
+
+const exists = (name) => variants(name).length > 0
 
 export default function Gallery() {
   const [lightboxIndex, setLightboxIndex] = useState(null)
 
   const photos = useMemo(
     () =>
-      order
-        .map((name) => ({
-          src: getImage(name),
-          caption: memories.captions[name] || 'A memory we\'ll always treasure.',
-        }))
-        .filter((photo) => photo.src),
+      order.map((name) => ({
+        name,
+        caption: memories.captions[name] || 'A memory we\'ll always treasure.',
+      })),
     []
   )
 
-  const featured = photos[0]
-  const rest = photos.slice(1)
+  // Only keep images that actually exist (missing ones are skipped).
+  const existing = useMemo(() => photos.filter((p) => exists(p.name)), [photos])
+  const featured = existing[0]
+  const rest = existing.slice(1)
 
   const close = useCallback(() => setLightboxIndex(null), [])
   const step = useCallback(
     (dir) =>
-      setLightboxIndex((i) => (i + dir + photos.length) % photos.length),
-    [photos.length]
+      setLightboxIndex((i) => (i + dir + existing.length) % existing.length),
+    [existing.length]
   )
 
   useEffect(() => {
@@ -52,8 +54,8 @@ export default function Gallery() {
   const openAt = (i) => setLightboxIndex(i)
 
   return (
-    <section id="memories" className="relative overflow-hidden py-28 md:py-40">
-      <div className="mx-auto max-w-6xl px-5 md:px-8">
+    <section id="memories" className="relative overflow-hidden py-24 md:py-40">
+      <div className="mx-auto max-w-6xl px-5 sm:px-6 md:px-8">
         <SectionHeading
           eyebrow={memories.eyebrow}
           title={memories.title}
@@ -61,7 +63,7 @@ export default function Gallery() {
         />
 
         {hasImages ? (
-          <div className="mt-16">
+          <div className="mt-12 sm:mt-16">
             {/* Featured image */}
             {featured && (
               <motion.figure
@@ -73,17 +75,19 @@ export default function Gallery() {
                 onClick={() => openAt(0)}
               >
                 <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 shadow-[0_60px_120px_-40px_rgba(0,0,0,0.8)] ring-1 ring-inset ring-white/10">
-                  <div className="aspect-[16/10] overflow-hidden">
-                    <img
-                      src={featured.src}
+                  <div className="aspect-[4/3] overflow-hidden sm:aspect-[16/10]">
+                    <Photo
+                      name={featured.name}
                       alt={featured.caption}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-110"
+                      sizes="(min-width: 640px) 64vw, 92vw"
+                      className="h-full w-full transition-transform duration-[2s] ease-out group-hover:scale-110"
+                      label={`Memory ${order.indexOf(featured.name) + 1}`}
+                      caption={featured.caption}
                     />
                   </div>
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-midnight/70 via-transparent to-transparent" aria-hidden="true" />
-                  <figcaption className="absolute bottom-0 inset-x-0 flex items-end justify-between gap-4 p-6 md:p-8">
-                    <span className="font-serif-alt text-xl md:text-2xl italic text-mist-50">
+                  <figcaption className="absolute bottom-0 inset-x-0 flex items-end justify-between gap-4 p-5 md:p-8">
+                    <span className="max-w-[70%] font-serif-alt text-lg md:text-2xl italic text-mist-50">
                       {featured.caption}
                     </span>
                     <span className="rounded-full border border-white/15 bg-midnight/50 px-3.5 py-1.5 text-[9px] tracking-[0.3em] uppercase text-gold-300 backdrop-blur-md">
@@ -94,12 +98,12 @@ export default function Gallery() {
               </motion.figure>
             )}
 
-            {/* Masonry — the remaining photographs */}
+            {/* Stones — remaining photographs, 1 column on phones */}
             {rest.length > 0 && (
-              <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-5 grid grid-cols-1 gap-5 sm:mt-7 sm:grid-cols-2 lg:grid-cols-3">
                 {rest.map((photo, i) => (
                   <motion.figure
-                    key={`${photo.src}-${i}`}
+                    key={`${photo.name}-${i}`}
                     initial={{ opacity: 0, y: 36 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-50px' }}
@@ -107,12 +111,14 @@ export default function Gallery() {
                     className="group cursor-pointer"
                     onClick={() => openAt(i + 1)}
                   >
-                    <div className={`relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_40px_80px_-35px_rgba(0,0,0,0.8)] ring-1 ring-inset ring-white/10 ${masonryAspects[i % masonryAspects.length]}`}>
-                      <img
-                        src={photo.src}
+                    <div className={`relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_40px_80px_-35px_rgba(0,0,0,0.8)] ring-1 ring-inset ring-white/10 ${aspects[i % aspects.length]}`}>
+                      <Photo
+                        name={photo.name}
                         alt={photo.caption}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-[1.8s] ease-out group-hover:scale-110"
+                        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw"
+                        className="h-full w-full transition-transform duration-[1.8s] ease-out group-hover:scale-110"
+                        label={`Memory ${String(i + 2).padStart(2, '0')}`}
+                        caption={photo.caption}
                       />
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-midnight/65 via-transparent to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-40" aria-hidden="true" />
                     </div>
@@ -130,7 +136,7 @@ export default function Gallery() {
             )}
           </div>
         ) : (
-          <div className="mt-16">
+          <div className="mt-12 sm:mt-16">
             <div className="mx-auto max-w-md text-center">
               <h3 className="font-display text-2xl md:text-3xl font-medium text-mist-50">
                 {memories.emptyTitle}
@@ -140,11 +146,11 @@ export default function Gallery() {
               </p>
             </div>
 
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {[0, 1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className={masonryAspects[i % masonryAspects.length]}>
-                  <Image
-                    src={null}
+                <div key={i} className={aspects[i % aspects.length]}>
+                  <Photo
+                    name={order[i] || '0'}
                     label={`Memory ${String(i + 1).padStart(2, '0')}`}
                     caption="A memory we'll always treasure."
                     className="h-full w-full"
@@ -168,7 +174,7 @@ export default function Gallery() {
             onClick={close}
             role="dialog"
             aria-modal="true"
-            aria-label={photos[lightboxIndex].caption}
+            aria-label={existing[lightboxIndex].caption}
           >
             <button
               type="button"
@@ -213,18 +219,20 @@ export default function Gallery() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-midnight shadow-[0_60px_140px_-40px_rgba(0,0,0,0.9)]">
-                <img
-                  src={photos[lightboxIndex].src}
-                  alt={photos[lightboxIndex].caption}
-                  className="max-h-[76vh] w-full object-contain"
+                <Photo
+                  name={existing[lightboxIndex].name}
+                  alt={existing[lightboxIndex].caption}
+                  fit="contain"
+                  className="max-h-[76vh] w-full"
+                  caption={existing[lightboxIndex].caption}
                 />
               </div>
               <figcaption className="mt-5 flex items-center justify-between gap-4">
                 <span className="font-serif-alt text-lg md:text-xl italic text-mist-100">
-                  {photos[lightboxIndex].caption}
+                  {existing[lightboxIndex].caption}
                 </span>
                 <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-gold-400/70">
-                  {lightboxIndex + 1} / {photos.length}
+                  {lightboxIndex + 1} / {existing.length}
                 </span>
               </figcaption>
             </motion.figure>

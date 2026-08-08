@@ -1,13 +1,27 @@
-import { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 
 // Floating royal-gold particles for a calm, celebratory atmosphere.
 // Rendered once (memoised) and cheap: dots are absolutely positioned
-// and animated with transform + opacity only.
+// and animated with transform + opacity only. The count scales down
+// on small screens, and reduced-motion users get a static sky.
 export default function Sparkles({ count = 22, className = '' }) {
+  const [small, setSmall] = useState(false)
+  const reducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)')
+    setSmall(mq.matches)
+    const onChange = (e) => setSmall(e.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
+  const effective = reducedMotion ? 0 : small ? Math.max(6, Math.ceil(count * 0.35)) : count
+
   const dots = useMemo(
     () =>
-      Array.from({ length: count }, (_, i) => ({
+      Array.from({ length: effective }, (_, i) => ({
         id: i,
         left: Math.random() * 100,
         top: 40 + Math.random() * 60,
@@ -18,7 +32,7 @@ export default function Sparkles({ count = 22, className = '' }) {
         sway: 10 + Math.random() * 20,
         swayDuration: 6 + Math.random() * 7,
       })),
-    [count]
+    [effective]
   )
 
   return (
@@ -37,7 +51,6 @@ export default function Sparkles({ count = 22, className = '' }) {
             height: dot.size,
             background:
               'radial-gradient(circle, rgba(240,225,178,0.95), rgba(212,175,55,0.35) 60%, transparent)',
-            boxShadow: '0 0 12px rgba(212,175,55,0.55)',
           }}
           animate={{
             y: [0, -dot.drift, 0],

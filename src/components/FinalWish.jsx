@@ -1,8 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
 import { finalWish, site } from '../data/content'
-import { getImage } from '../data/images'
-import Image from './Image'
+import { Photo } from './Image'
 import WarmLights from './Sparkles'
 
 export default function FinalWish() {
@@ -12,7 +11,6 @@ export default function FinalWish() {
     offset: ['start end', 'end end'],
   })
   const bgY = useTransform(scrollYProgress, [0, 1], ['-10%', '5%'])
-  const familyPhoto = getImage('2')
 
   return (
     <section
@@ -36,10 +34,10 @@ export default function FinalWish() {
 
       <WarmLights count={16} />
 
-      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-6 py-32 md:py-44 text-center">
+      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-5 sm:px-6 py-28 md:py-44 text-center">
         <motion.span
-          initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
-          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9 }}
           className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.05] px-4 py-1.5 backdrop-blur-md"
@@ -60,11 +58,11 @@ export default function FinalWish() {
         />
 
         <motion.h2
-          initial={{ opacity: 0, y: 24, filter: 'blur(10px)' }}
-          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-9 font-display text-4xl sm:text-5xl md:text-6xl font-semibold text-mist-50"
+          className="mt-8 font-display text-4xl font-semibold leading-[1.1] text-mist-50 sm:text-5xl md:text-6xl"
         >
           {finalWish.heading}
         </motion.h2>
@@ -95,21 +93,14 @@ export default function FinalWish() {
             aria-hidden="true"
           />
           <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 shadow-[0_70px_140px_-40px_rgba(0,0,0,0.85)] ring-1 ring-inset ring-white/10">
-            {familyPhoto ? (
-              <img
-                src={familyPhoto}
-                alt="Our family together"
-                loading="lazy"
-                className="aspect-[16/10] w-full object-cover"
-              />
-            ) : (
-              <Image
-                src={null}
-                label="Family photograph"
-                caption="A photograph of the family, together"
-                className="aspect-[16/10] w-full"
-              />
-            )}
+            <Photo
+              name="2"
+              alt="Our family together"
+              sizes="(min-width: 640px) 36vw, 90vw"
+              className="aspect-[16/10] w-full"
+              label="Family photograph"
+              caption="A photograph of the family, together"
+            />
           </div>
         </motion.div>
 
@@ -118,7 +109,7 @@ export default function FinalWish() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.7 }}
-          className="mt-16 max-w-xl font-serif-alt text-xl md:text-2xl italic leading-relaxed text-mist-100/90"
+          className="mt-14 max-w-xl font-serif-alt text-lg sm:text-xl md:text-2xl italic leading-relaxed text-mist-100/90"
         >
           {finalWish.thanks}
         </motion.p>
@@ -133,7 +124,7 @@ export default function FinalWish() {
           {finalWish.blessingsTitle}
         </motion.p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:gap-4">
+        <div className="mt-8 flex max-w-md flex-wrap items-center justify-center gap-2.5 md:max-w-none md:gap-4">
           {finalWish.blessings.map((blessing, i) => {
             const Icon = blessing.icon
             return (
@@ -144,10 +135,10 @@ export default function FinalWish() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 1 + i * 0.14, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -3 }}
-                className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.06] px-5 py-2.5 backdrop-blur-xl shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)] transition-colors duration-300 hover:border-gold-500/40"
+                className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2.5 backdrop-blur-xl shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)] transition-colors duration-300 hover:border-gold-500/40"
               >
                 <Icon size={14} strokeWidth={1.5} className="text-gold-400" aria-hidden="true" />
-                <span className="font-serif-alt text-base md:text-lg italic text-mist-100/90">
+                <span className="font-serif-alt text-sm md:text-lg italic text-mist-100/90">
                   {blessing.label}
                 </span>
               </motion.span>

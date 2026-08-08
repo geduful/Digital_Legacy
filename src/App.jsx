@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { AnimatePresence, MotionConfig } from 'framer-motion'
 import LoadingScreen from './components/LoadingScreen'
 import AmbientBackground from './components/AmbientBackground'
@@ -6,14 +6,17 @@ import Spotlight from './components/Spotlight'
 import ScrollProgress from './components/ScrollProgress'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
-import BirthdayLetter from './components/BirthdayLetter'
-import Gallery from './components/Gallery'
-import Reasons from './components/Reasons'
-import VideoSection from './components/VideoSection'
-import FinalWish from './components/FinalWish'
+
+// Below-the-fold sections are code-split: the critical hero experience
+// mounts immediately, everything else streams in as needed.
+const BirthdayLetter = lazy(() => import('./components/BirthdayLetter'))
+const Gallery = lazy(() => import('./components/Gallery'))
+const Reasons = lazy(() => import('./components/Reasons'))
+const VideoSection = lazy(() => import('./components/VideoSection'))
+const FinalWish = lazy(() => import('./components/FinalWish'))
 
 function App() {
-  const [loading, setLoading] = useState(true)
+  const [ready, setReady] = useState(false)
 
   return (
     <MotionConfig reducedMotion="user">
@@ -22,23 +25,23 @@ function App() {
         <Spotlight />
         <ScrollProgress />
 
-        <AnimatePresence>
-          {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
-        </AnimatePresence>
+        {/* The whole experience mounts immediately — the intro splash
+            simply layers on top while images warm up underneath. */}
+        <Navbar />
+        <main className="relative z-10">
+          <Hero start={ready} />
+          <Suspense fallback={null}>
+            <BirthdayLetter />
+            <Gallery />
+            <Reasons />
+            <VideoSection />
+            <FinalWish />
+          </Suspense>
+        </main>
 
-        {!loading && (
-          <>
-            <Navbar />
-            <main className="relative z-10">
-              <Hero />
-              <BirthdayLetter />
-              <Gallery />
-              <Reasons />
-              <VideoSection />
-              <FinalWish />
-            </main>
-          </>
-        )}
+        <AnimatePresence>
+          {!ready && <LoadingScreen onComplete={() => setReady(true)} />}
+        </AnimatePresence>
       </div>
     </MotionConfig>
   )

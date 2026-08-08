@@ -1,18 +1,18 @@
 import { motion } from 'framer-motion'
 
+// Transform + opacity only — blur filters are deliberately avoided so
+// reveals stay cheap on mobile GPUs.
 const variants = {
   hidden: (direction) => ({
     opacity: 0,
-    y: direction === 'up' ? 44 : direction === 'down' ? -44 : 0,
-    x: direction === 'left' ? 36 : direction === 'right' ? -36 : 0,
-    filter: 'blur(8px)',
+    y: direction === 'up' ? 40 : direction === 'down' ? -40 : 0,
+    x: direction === 'left' ? 32 : direction === 'right' ? -32 : 0,
   }),
   visible: {
     opacity: 1,
     y: 0,
     x: 0,
-    filter: 'blur(0px)',
-    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
   },
 }
 

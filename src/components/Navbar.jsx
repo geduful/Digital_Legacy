@@ -57,7 +57,13 @@ export default function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
+    if (!open) return undefined
+    const onKey = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
     return () => {
+      window.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
     }
   }, [open])
@@ -91,6 +97,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => go(link.id)}
+                  aria-current={active === link.id ? 'true' : undefined}
                   className={`relative text-[11px] tracking-[0.22em] uppercase transition-colors duration-300 ${
                     active === link.id ? 'text-gold-300' : 'text-mist-300/80 hover:text-mist-50'
                   }`}
@@ -112,7 +119,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="lg:hidden flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-mist-100 transition-colors hover:border-gold-500/40 hover:text-gold-300"
+              className="lg:hidden flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-mist-100 transition-colors hover:border-gold-500/40 hover:text-gold-300"
               aria-label="Open menu"
             >
               <Menu size={16} />
@@ -138,7 +145,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-mist-100 transition-colors hover:border-gold-500/40 hover:text-gold-300"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-mist-100 transition-colors hover:border-gold-500/40 hover:text-gold-300"
                 aria-label="Close menu"
               >
                 <X size={16} />

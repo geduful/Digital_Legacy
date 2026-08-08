@@ -3,31 +3,19 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Music2, Volume2, VolumeX } from 'lucide-react'
 import { music } from '../data/content'
 
-// Discreet glass music control — never autoplays.
-// Shows a one-time hint after the site loads so visitors discover it.
+// Discreet glass music control — never autoplays. The Audio element is
+// created lazily on first tap, so no music resource is ever fetched
+// unless the visitor asks for it.
 export default function MusicToggle({ compact = false }) {
   const [state, setState] = useState('idle') // idle | playing | paused
   const [notice, setNotice] = useState(false)
   const [showHint, setShowHint] = useState(false)
   const audioRef = useRef(null)
 
-  useEffect(() => {
-    if (!music.src) return
-    const audio = new Audio(music.src)
-    audio.loop = true
-    audio.preload = 'none'
-    audio.volume = 0.65
-    audioRef.current = audio
-    return () => {
-      audio.pause()
-      audioRef.current = null
-    }
-  }, [])
-
   // Reveal the hint a moment after mount; keep it until the visitor
   // taps the button for the first time.
   useEffect(() => {
-    if (!music.src) return
+    if (!music.src) return undefined
     const show = setTimeout(() => setShowHint(true), 2600)
     return () => clearTimeout(show)
   }, [])
@@ -38,22 +26,29 @@ export default function MusicToggle({ compact = false }) {
   }
 
   const toggle = () => {
-    const audio = audioRef.current
-    if (!music.src || !audio) {
+    if (!music.src) {
       showNotice()
       return
     }
     setShowHint(false)
     if (state === 'playing') {
-      audio.pause()
+      audioRef.current?.pause()
       setState('paused')
-    } else {
-      audio.play().then(() => setState('playing')).catch(showNotice)
+      return
     }
+    // Lazy instantiation — the 3.7MB melody only downloads on demand.
+    if (!audioRef.current) {
+      const audio = new Audio(music.src)
+      audio.loop = true
+      audio.preload = 'none'
+      audio.volume = 0.65
+      audioRef.current = audio
+    }
+    audioRef.current.play().then(() => setState('playing')).catch(showNotice)
   }
 
   const Icon = state === 'playing' ? Volume2 : state === 'paused' ? VolumeX : Music2
-  const size = compact ? 'h-9 w-9' : 'h-10 w-10'
+  const size = compact ? 'h-11 w-11' : 'h-12 w-12'
 
   return (
     <>

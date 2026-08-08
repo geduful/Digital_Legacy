@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ImageOff } from 'lucide-react'
+import { variants, dims } from '../data/images'
 
 // Elegant glass placeholder shown while real photographs are added.
 export function Placeholder({ label, caption, className = '' }) {
@@ -26,6 +27,49 @@ export function Placeholder({ label, caption, className = '' }) {
         {label || 'Photograph pending'}
       </span>
     </div>
+  )
+}
+
+// Optimized photograph: responsive WebP srcset, intrinsic dimensions
+// (no layout shift), lazy loading below the fold, graceful fallback.
+export function Photo({
+  name,
+  alt,
+  className = '',
+  imgClassName = '',
+  label,
+  caption,
+  priority = false,
+  sizes = '100vw',
+  fit = 'cover',
+}) {
+  const [failed, setFailed] = useState(false)
+  const list = variants(name)
+  const missing = !list.length || failed
+
+  if (missing) {
+    return <Placeholder label={label} caption={caption} className={className} />
+  }
+
+  const sorted = [...list].sort((a, b) => a.width - b.width)
+  const largest = sorted[sorted.length - 1]
+  const size = dims(name)
+  const srcSet = sorted.map((v) => `${v.url} ${v.width}w`).join(', ')
+
+  return (
+    <img
+      src={largest.url}
+      srcSet={srcSet}
+      sizes={sizes || '100vw'}
+      alt={alt}
+      width={size?.w || largest.width}
+      height={size?.h || undefined}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : 'auto'}
+      decoding="async"
+      onError={() => setFailed(true)}
+      className={`object-${fit} ${imgClassName} ${className}`}
+    />
   )
 }
 
