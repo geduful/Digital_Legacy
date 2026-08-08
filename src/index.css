@@ -1,0 +1,119 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Deep midnight backgrounds */
+  --color-midnight: #061321;
+  --color-midnight-950: #040c16;
+  --color-ocean-900: #0e2238;
+  --color-ocean-800: #173b63;
+  --color-ocean-700: #1e4a7d;
+
+  /* Royal gold accent */
+  --color-gold-200: #f0e1b2;
+  --color-gold-300: #e6cc80;
+  --color-gold-400: #dcbc58;
+  --color-gold-500: #d4af37;
+  --color-gold-600: #b8942e;
+  --color-gold-700: #967725;
+
+  /* Aurora accent */
+  --color-aurora-200: #bbeafd;
+  --color-aurora-300: #9cdefc;
+  --color-aurora-400: #8bd8fb;
+  --color-aurora-500: #7dd3fc;
+
+  /* Emerald highlight */
+  --color-emerald-400: #86eabe;
+  --color-emerald-500: #6ee7b7;
+
+  /* Text */
+  --color-mist-50: #f8fafc;
+  --color-mist-100: #f1f5f9;
+  --color-mist-200: #e2e8f0;
+  --color-mist-300: #cbd5e1;
+  --color-mist-400: #94a3b8;
+  --color-mist-500: #64748b;
+
+  /* Warm paper tones for the letter */
+  --color-cream-50: #fbf7ee;
+  --color-cream-100: #f5eedc;
+  --color-cream-200: #eee2c8;
+  --color-champagne-200: #f1e2bd;
+  --color-champagne-300: #e6cf99;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-serif-alt: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
+}
+
+body {
+  background-color: var(--color-midnight);
+  color: var(--color-mist-50);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--color-gold-500);
+  color: var(--color-midnight);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-midnight);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ocean-800);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-600);
+}
+
+/* Thin gold rule used as a divider */
+.gold-rule {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold-500) 50%,
+    transparent
+  );
+}
+
+/* Fine grain texture for a cinematic feel */
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Luxury paper texture for the birthday letter */
+.paper {
+  background-color: var(--color-cream-50);
+  background-image:
+    linear-gradient(rgba(180, 148, 46, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 148, 46, 0.045) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.35'/%3E%3C/svg%3E");
+  background-size:
+    34px 34px,
+    34px 34px,
+    220px 220px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
