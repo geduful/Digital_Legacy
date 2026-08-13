@@ -91,7 +91,7 @@ export default function Hero({ start = true }) {
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: start ? 1.2 : 0, duration: 0.8, ease: 'easeOut' }}
+              transition={{ delay: start ? 0.7 : 0, duration: 0.8, ease: 'easeOut' }}
               className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/10 bg-midnight/70 px-5 py-2.5 backdrop-blur-xl shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7)]"
             >
               <span className="flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-gold-300">
@@ -162,7 +162,7 @@ export default function Hero({ start = true }) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: start ? 1.8 : 0, duration: 1 }}
+        transition={{ delay: start ? 1.0 : 0, duration: 1 }}
         style={{ opacity: fade }}
         className="absolute bottom-6 inset-x-0 z-10 hidden justify-center sm:flex"
       >

@@ -4,7 +4,12 @@ import { intro } from '../data/content'
 
 // Surprise intro: two short messages build anticipation. It is a
 // lightweight overlay — the celebration already mounts underneath,
-// so hero assets warm up while the intro plays. Kept short.
+// so hero assets warm up while the intro plays.
+//
+// Timeline: background at 0.0s → text at 0.3s → second message at
+// 0.7s → fade out at 1.3s → hero fully visible ~1.6s. The intro
+// creates anticipation, never a delay: nothing outside the hero
+// participates in it.
 export default function LoadingScreen({ onComplete }) {
   const [step, setStep] = useState(0)
   const reducedMotion = useReducedMotion()
@@ -15,8 +20,8 @@ export default function LoadingScreen({ onComplete }) {
       onComplete()
       return
     }
-    const stepTimer = setTimeout(() => setStep(1), twoSteps ? 1500 : 1200)
-    const finish = setTimeout(onComplete, twoSteps ? 3100 : 2500)
+    const stepTimer = setTimeout(() => setStep(1), twoSteps ? 700 : 500)
+    const finish = setTimeout(onComplete, twoSteps ? 1300 : 1000)
     return () => {
       clearTimeout(stepTimer)
       clearTimeout(finish)
@@ -26,17 +31,17 @@ export default function LoadingScreen({ onComplete }) {
   return (
     <motion.div
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-midnight"
-      exit={{ opacity: 0, scale: 1.04 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative flex max-w-md flex-col items-center gap-6 px-8 text-center"
+          exit={{ opacity: 0, y: -14 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="relative flex max-w-md flex-col items-center gap-5 px-8 text-center"
         >
           {step === 0 ? (
             <>
@@ -59,7 +64,7 @@ export default function LoadingScreen({ onComplete }) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.8 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
         className="absolute bottom-10 flex flex-col items-center gap-3"
       >
         <span className="font-sans text-[9px] tracking-[0.45em] uppercase text-gold-400/70">
