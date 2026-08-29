@@ -1,17 +1,40 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Play, Clapperboard } from 'lucide-react'
 import { video } from '../data/content'
 import SectionHeading from './SectionHeading'
 import { Photo } from './Image'
+import { getImage } from '../data/images'
 
 export default function VideoSection() {
   const hasVideo = Boolean(video.videoUrl)
   const [started, setStarted] = useState(false)
   const videoRef = useRef(null)
+  const sectionRef = useRef(null)
+
+  // iPhone Safari ignores preload until the element is near the viewport.
+  // The moment this section scrolls into view, force the browser to start
+  // downloading the movie so it has buffered data ready by the tap.
+  useEffect(() => {
+    if (!hasVideo) return
+    const el = sectionRef.current
+    if (!el) return
+    const startLoad = () => videoRef.current?.load()
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          startLoad()
+          io.disconnect()
+        }
+      },
+      { rootMargin: '200px 0px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [hasVideo])
 
   return (
-    <section id="video" className="relative overflow-hidden py-24 md:py-40">
+    <section id="video" ref={sectionRef} className="relative overflow-hidden py-24 md:py-40">
       {/* Blurred poster backdrop */}
       <div className="pointer-events-none absolute inset-0 opacity-30 blur-2xl scale-110" aria-hidden="true">
         <Photo
@@ -52,6 +75,7 @@ export default function VideoSection() {
                     <video
                       ref={videoRef}
                       src={video.videoUrl}
+                      poster={getImage('3')}
                       playsInline
                       preload="auto"
                       controls={started}
