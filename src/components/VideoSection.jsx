@@ -52,7 +52,8 @@ export default function VideoSection() {
                         controls
                         autoPlay
                         playsInline
-                        className="absolute inset-0 h-full w-full object-cover"
+                        preload="metadata"
+                        className="absolute inset-0 h-full w-full bg-midnight object-contain"
                         aria-label={video.title}
                       />
                     ) : (
