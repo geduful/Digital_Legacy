@@ -122,7 +122,7 @@ export const video = {
     'A short birthday film, made with love, will premiere here soon.',
   // Add your film to  public/videos/  — e.g.  tribute.mp4 — and it
   // plays in the cinematic player below.
-  videoUrl: '', // Set to '/videos/tribute.mp4' once public/videos/tribute.mp4 is added.
+  videoUrl: '/videos/tribute.mp4', // Your birthday film.
 }
 
 export const finalWish = {
