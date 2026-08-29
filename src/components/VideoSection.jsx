@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Play, Clapperboard } from 'lucide-react'
 import { video } from '../data/content'
@@ -8,6 +8,7 @@ import { Photo } from './Image'
 export default function VideoSection() {
   const hasVideo = Boolean(video.videoUrl)
   const [started, setStarted] = useState(false)
+  const videoRef = useRef(null)
 
   return (
     <section id="video" className="relative overflow-hidden py-24 md:py-40">
@@ -46,21 +47,29 @@ export default function VideoSection() {
               <div className="relative w-full">
                 {hasVideo ? (
                   <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
-                    {started ? (
-                      <video
-                        src={video.videoUrl}
-                        controls
-                        autoPlay
-                        playsInline
-                        preload="metadata"
-                        className="absolute inset-0 h-full w-full bg-midnight object-contain"
-                        aria-label={video.title}
-                      />
-                    ) : (
+                    {/* Video is mounted up-front and preloaded so it can
+                        start instantly the moment the poster is tapped. */}
+                    <video
+                      ref={videoRef}
+                      src={video.videoUrl}
+                      playsInline
+                      preload="auto"
+                      controls={started}
+                      loop
+                      className="absolute inset-0 h-full w-full bg-midnight object-contain"
+                      aria-label={video.title}
+                    />
+
+                    {!started && (
                       <button
                         type="button"
-                        onClick={() => setStarted(true)}
-                        className="group relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden bg-midnight"
+                        onClick={() => {
+                          setStarted(true)
+                          requestAnimationFrame(() => {
+                            videoRef.current?.play().catch(() => {})
+                          })
+                        }}
+                        className="group absolute inset-0 z-10 flex h-full w-full cursor-pointer items-center justify-center overflow-hidden bg-midnight"
                         aria-label="Play birthday video"
                       >
                         <Photo
